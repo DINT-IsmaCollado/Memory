@@ -5,8 +5,21 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Memory"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800">
+        Title="MainWindow" Height="450" Width="800" Icon="96.ico">
     <Grid>
-        
+        <DockPanel>
+            <StackPanel DockPanel.Dock="Top" Background="#FF0085F9" VerticalAlignment="Center" HorizontalAlignment="Left" Height="35" Width="800">
+                <TextBlock Text="Dificultad:"/>
+                <RadioButton Content="Baja"/>
+                <RadioButton Content="Medio"/>
+                <RadioButton Content="Alta"/>
+                <Button Content="Iniciar"/>
+            </StackPanel>
+            <StackPanel DockPanel.Dock="Bottom" Background="#FFFF0033" Height="35">
+                <ProgressBar/>
+                <Button Content="Mostrar" Width="60" HorizontalAlignment="Right" VerticalAlignment="Center"/>
+            </StackPanel>
+            <Grid></Grid>
+        </DockPanel>
     </Grid>
 </Window>
