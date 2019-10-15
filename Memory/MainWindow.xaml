@@ -5,28 +5,37 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Memory"
         mc:Ignorable="d"
-        Title="MainWindow" Height="535" Width="490" MinHeight="535" MinWidth="490"  Icon="96.ico" ContentRendered="Window_ContentRendered">
+        Title="MainWindow" Height="535" Width="490" MinHeight="535" MinWidth="490"  Icon="96.ico" >
     <Grid Background="#EEA47A">
         <DockPanel>
-            <!--<Border DockPanel.Dock="Top" BorderBrush="Black" BorderThickness="5" Margin="5" CornerRadius="5">
-                <StackPanel Height="55" Orientation="Horizontal" Background="White">
-                    <TextBlock Text="Dificultad:" Height="25" Width="60"/>
-                    <RadioButton Content="Baja" Height="25" Width="60"/>
-                    <RadioButton Content="Medio" Height="25" Width="60"/>
-                    <RadioButton Content="Alta" Height="25" Width="60"  />
-                    <Button Content="Iniciar" Height="25" Width="60"  VerticalAlignment="Center"/>
+            <Border DockPanel.Dock="Top" BorderBrush="Black" BorderThickness="5" Margin="5" CornerRadius="5">
+                <StackPanel Height="45" Orientation="Horizontal" Background="White">
+                    <TextBlock Text="Dificultad:" Margin ="5,5,0,0"    Height="25" Width="60"/>
+                    <RadioButton x:Name="RadioButtonBaja" Content="Baja" Height="25" Width="60" Margin ="0,7,0,0" />
+                    <RadioButton x:Name="RadioButtonMedia" Content="Medio" Height="25" Width="60" Margin ="0,7,0,0" />
+                    <RadioButton x:Name="RadioButtonAlta" Content="Alta" Height="25" Width="60"  Margin ="0,7,0,0" />
+                    <Button x:Name="ButtonIniciar" Content="Iniciar" Height="25" Width="60"  VerticalAlignment="Center" Click="ButtonIniciar_Click"/>
                 </StackPanel>
             </Border>
             <Border DockPanel.Dock="Bottom" BorderBrush="Black" BorderThickness="5" Margin="5" CornerRadius="5">
-                <StackPanel  Background="White" Height="55" Orientation="Horizontal" >
-                    <ProgressBar x:Name="pbStatus" Minimum="0" Maximum="100" Width="350" Height="20" Margin="15"/>
-                    <Button Content="Mostrar" Width="60" HorizontalAlignment="Right" VerticalAlignment="Center"/>
-                </StackPanel>
-            </Border> -->
+                <DockPanel  Background="White" Height="45" >
+                    <Button Content="Mostrar" Width="60" DockPanel.Dock="Right" VerticalAlignment="Center" Margin="0,0,10,0"/>
+                    <ProgressBar x:Name="pbStatus" Minimum="0" Maximum="100" MinWidth="350" Height="20" Margin="15"/>
+                </DockPanel>
+            </Border>
             
-            <Grid>
-                <Grid.ColumnDefinitions></Grid.ColumnDefinitions>
+            <Grid x:Name="GridCartas" ShowGridLines="True">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition/>
+                    <ColumnDefinition/>
+                    <ColumnDefinition/>
+                    <ColumnDefinition/>
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+
+                </Grid.RowDefinitions>
             </Grid>
+           
         </DockPanel>
     </Grid>
 </Window>
