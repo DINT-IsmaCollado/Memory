@@ -21,63 +21,39 @@ namespace Memory
     /// </summary>
     public partial class MainWindow : Window
     {
+        List<char> listaLetras = new List<char>(10);
+        string caracter1;
+        string caracter2;
         public MainWindow()
         {
             InitializeComponent();
         }
         private void ButtonIniciar_Click(object sender, RoutedEventArgs e)
         {
+            
+            Random semilla = new Random();
+
+            int numFilas = 0;
             if (RadioButtonBaja.IsChecked == true)
-                FilasPartidaFacil();
+                numFilas = 3;
             if (RadioButtonMedia.IsChecked == true)
-                FilasPartidaMedia();
+                numFilas = 4;
             if (RadioButtonAlta.IsChecked == true)
-                FilasPartidaAlta();
+                numFilas = 5;
+            DibujarFilas(numFilas);
+
+            for (int i = 0; i <= (numFilas * 4) / 2; i++)
+                listaLetras.Add((char)semilla.Next(65, 91));
+
+            EscribirCartas();
+
+            
         }
 
-        private void FilasPartidaFacil()
+        private void DibujarFilas(int numFilas)
         {
-            GridCartas.Children.Clear();
-
-            Border borde;
-            TextBlock tb;
-            Viewbox vb;
-
-            const int NUM_FILAS = 3;
-            for (int indiceFilas = 0; indiceFilas <= NUM_FILAS; indiceFilas++)
-            {
-                    borde = new Border();
-                    tb = new TextBlock();
-                    vb = new Viewbox();
-                    GridCartas.RowDefinitions.Add(new RowDefinition());
-                    GridCartas.Children.Add(borde);
-                    borde.Child = vb;
-                    vb.Child = tb;
-    
-                    tb.FontFamily = new FontFamily("Webdings");
-    
-
-                    tb.Text += "s";
-            }
-        }
-
-        private void FilasPartidaMedia()
-        {
-
-            const int NUM_FILAS = 4;
-            for (int indiceFilas = 0; indiceFilas < NUM_FILAS; indiceFilas++)
-            {
-                GridCartas.RowDefinitions.Add(new RowDefinition());
-            }
-        }
-
-        private void FilasPartidaAlta()
-        {
-
-            GridCartas.Children.Clear();
-
-            const int NUM_FILAS = 5;
-            for (int indiceFilas = 0; indiceFilas < NUM_FILAS; indiceFilas++)
+            GridCartas.RowDefinitions.Clear();
+            for (int indiceFilas = 0; indiceFilas < numFilas; indiceFilas++)
             {
                 GridCartas.RowDefinitions.Add(new RowDefinition());
             }
@@ -88,10 +64,11 @@ namespace Memory
             Border borde;
             TextBlock tb;
             Viewbox vb;
+            const int NUM_COLUMNA = 4;
 
             for (int contadorFila = 0; contadorFila < GridCartas.RowDefinitions.Count; contadorFila++)
             {
-                for (int contadorColumna = 0; contadorColumna < 4; contadorColumna++)
+                for (int contadorColumna = 0; contadorColumna < NUM_COLUMNA; contadorColumna++)
                 {
                     borde = new Border();
                     tb = new TextBlock();
@@ -102,16 +79,62 @@ namespace Memory
                     borde.Child = vb;
                     vb.Child = tb;
 
+                    borde.Margin = new Thickness(5);
+                    borde.BorderThickness = new Thickness(3);
+                    borde.BorderBrush = Brushes.Black;
+                    borde.CornerRadius = new CornerRadius(5);
+                    borde.Background = Brushes.LightBlue;
+                    borde.MouseDown += Borde_MouseDown;
                     tb.FontFamily = new FontFamily("Webdings");
-
-                    Grid.SetColumn(tb, contadorColumna);
-                    Grid.SetRow(tb, contadorFila);
-
                     tb.Text = "s";
 
-                    borde.Margin = new Thickness(3);
+
+                    Grid.SetColumn(borde, contadorColumna);
+                    Grid.SetRow(borde, contadorFila);
                 }
             }
+        }
+
+        private void Borde_MouseDown(object sender, MouseButtonEventArgs e)
+        {
+            Border borde = sender as Border;
+            Viewbox vb = (Viewbox) borde.Child;
+            TextBlock tb = (TextBlock) vb.Child;
+            Random semilla = new Random();
+            tb.Tag = Convert.ToString(listaLetras[semilla.Next(0, 10)]);
+
+
+            if (tb.Text.Equals("s"))
+            {
+                tb.Text = tb.Tag.ToString();
+                if (caracter1 == null)
+                    caracter1 = tb.Text;
+                else if (caracter2 == null)
+                    caracter2 = tb.Text;
+            }
+
+            if (caracter1 != null && caracter2 != null)
+                if(!ComprobarIguales())
+                {
+                    caracter1 = null;
+                    caracter2 = null;
+                    tb.Text = "s";
+                }
+
+
+
+
+
+
+
+        }
+
+        private bool ComprobarIguales()
+        {
+            bool iguales = false;
+            if (caracter1 == caracter2)
+                iguales = true;
+            return iguales;
         }
     }
 }

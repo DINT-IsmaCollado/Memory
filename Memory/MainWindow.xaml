@@ -24,7 +24,7 @@
                 </DockPanel>
             </Border>
             
-            <Grid x:Name="GridCartas" ShowGridLines="True">
+            <Grid x:Name="GridCartas">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition/>
                     <ColumnDefinition/>
