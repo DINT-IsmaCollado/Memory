@@ -13,6 +13,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using System.Windows.Threading;
 
 namespace Memory
 {
@@ -21,13 +22,23 @@ namespace Memory
     /// </summary>
     public partial class MainWindow : Window
     {
-        List<char> listaLetras = new List<char>(10);
-        string caracter1;
-        string caracter2;
+        private List<string> letras = new List<string> { "A", "B", "C", "D", "E", "F", "G", "H", "I", "J" };
+        private List<string> letrasPuestas = new List<string>();
+        private int numeroCartas;
+        private string caracter1;
+        private string caracter2;
+        private DispatcherTimer temporizador;
         public MainWindow()
         {
             InitializeComponent();
+            temporizador = new DispatcherTimer()
+            {
+                Interval = TimeSpan.FromSeconds(2)
+            };
+
         }
+
+        
         private void ButtonIniciar_Click(object sender, RoutedEventArgs e)
         {
             
@@ -40,10 +51,8 @@ namespace Memory
                 numFilas = 4;
             if (RadioButtonAlta.IsChecked == true)
                 numFilas = 5;
+            numeroCartas = numFilas * 4;
             DibujarFilas(numFilas);
-
-            for (int i = 0; i <= (numFilas * 4) / 2; i++)
-                listaLetras.Add((char)semilla.Next(65, 91));
 
             EscribirCartas();
 
@@ -73,7 +82,7 @@ namespace Memory
                     borde = new Border();
                     tb = new TextBlock();
                     vb = new Viewbox();
-
+                    Random semilla = new Random();
 
                     GridCartas.Children.Add(borde);
                     borde.Child = vb;
@@ -88,6 +97,21 @@ namespace Memory
                     tb.FontFamily = new FontFamily("Webdings");
                     tb.Text = "s";
 
+                    string letra = letras[semilla.Next(0, 10)];
+
+                    int contador = 0;
+                    while (contador <= numeroCartas)
+                    {
+                        if (Disponible(letra))
+                        {
+                            tb.Tag = letra;
+                            letrasPuestas.Add(letra);
+                        }
+                            
+                        else
+                            letra = letras[semilla.Next(0, 10)];
+                        contador++;
+                    }
 
                     Grid.SetColumn(borde, contadorColumna);
                     Grid.SetRow(borde, contadorFila);
@@ -100,8 +124,7 @@ namespace Memory
             Border borde = sender as Border;
             Viewbox vb = (Viewbox) borde.Child;
             TextBlock tb = (TextBlock) vb.Child;
-            Random semilla = new Random();
-            tb.Tag = Convert.ToString(listaLetras[semilla.Next(0, 10)]);
+            
 
 
             if (tb.Text.Equals("s"))
@@ -113,13 +136,7 @@ namespace Memory
                     caracter2 = tb.Text;
             }
 
-            if (caracter1 != null && caracter2 != null)
-                if(!ComprobarIguales())
-                {
-                    caracter1 = null;
-                    caracter2 = null;
-                    tb.Text = "s";
-                }
+           
 
 
 
@@ -129,12 +146,15 @@ namespace Memory
 
         }
 
-        private bool ComprobarIguales()
+        private bool Disponible(string letras)
         {
-            bool iguales = false;
-            if (caracter1 == caracter2)
-                iguales = true;
-            return iguales;
+            int num = 0;
+            for (int indice = 0; indice < letrasPuestas.Count; indice++)
+            {
+                if (letrasPuestas[indice].Equals(letras))
+                    num++;
+            }
+            return num <= 1;
         }
     }
 }
