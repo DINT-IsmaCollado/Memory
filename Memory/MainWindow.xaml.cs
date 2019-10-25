@@ -28,6 +28,10 @@ namespace Memory
         private string caracter1;
         private string caracter2;
         private DispatcherTimer temporizador;
+        private TextBlock carta1;
+        private TextBlock carta2;
+        private ProgressBar progreso = new ProgressBar();
+        private double progresoActual;
         public MainWindow()
         {
             InitializeComponent();
@@ -52,11 +56,14 @@ namespace Memory
             if (RadioButtonAlta.IsChecked == true)
                 numFilas = 5;
             numeroCartas = numFilas * 4;
+            progreso.Maximum = numeroCartas;
+            progreso.Value = 0;
+            progresoActual = progreso.Value;
             DibujarFilas(numFilas);
 
             EscribirCartas();
 
-            
+
         }
 
         private void DibujarFilas(int numFilas)
@@ -93,14 +100,13 @@ namespace Memory
                     borde.BorderBrush = Brushes.Black;
                     borde.CornerRadius = new CornerRadius(5);
                     borde.Background = Brushes.LightBlue;
-                    borde.MouseDown += Borde_MouseDown;
+
                     tb.FontFamily = new FontFamily("Webdings");
                     tb.Text = "s";
 
                     string letra = letras[semilla.Next(0, 10)];
 
-                    int contador = 0;
-                    while (contador <= numeroCartas)
+                    while (letras.Count * 2 >= letrasPuestas.Count)
                     {
                         if (Disponible(letra))
                         {
@@ -110,13 +116,58 @@ namespace Memory
                             
                         else
                             letra = letras[semilla.Next(0, 10)];
-                        contador++;
+
                     }
+
+                    borde.MouseDown += Borde_MouseDown;
+                    borde.MouseUp += Borde_MouseUp;
 
                     Grid.SetColumn(borde, contadorColumna);
                     Grid.SetRow(borde, contadorFila);
                 }
             }
+
+
+        }
+
+        public void ReiniciaVariables()
+        {
+            caracter1 = null;
+            caracter2 = null;
+            ProgressBar value = this.progreso;
+            value.Value = value.Value + 1;
+            if (progreso.Value == progreso.Maximum)
+            {
+                MessageBox.Show("Partida acabada", "Mensaje", MessageBoxButton.OK, MessageBoxImage.Asterisk);
+            }
+        }
+
+        private void Borde_MouseUp(object sender, MouseButtonEventArgs e)
+        {
+            if(Comprobar2CartasLevantadas())
+            {
+                if (caracter1 != caracter2)
+                    VolverCartaAInterrogacion();
+                else
+                    progreso.Value = progresoActual + 1;
+
+                ReiniciaVariables();
+            }
+
+
+        }
+
+        public bool Comprobar2CartasLevantadas()
+        {
+            if (caracter1 != null && caracter2 != null)
+                return true;
+            return false;
+        }
+
+        public void VolverCartaAInterrogacion()
+        {
+            carta1.Text = "s";
+            carta2.Text = "s";
         }
 
         private void Borde_MouseDown(object sender, MouseButtonEventArgs e)
@@ -124,24 +175,22 @@ namespace Memory
             Border borde = sender as Border;
             Viewbox vb = (Viewbox) borde.Child;
             TextBlock tb = (TextBlock) vb.Child;
-            
 
 
             if (tb.Text.Equals("s"))
             {
                 tb.Text = tb.Tag.ToString();
                 if (caracter1 == null)
-                    caracter1 = tb.Text;
+                {
+                    caracter1 = tb.Tag.ToString();
+                    carta1 = tb;
+                }
                 else if (caracter2 == null)
-                    caracter2 = tb.Text;
+                {
+                    caracter2 = tb.Tag.ToString();
+                    carta2 = tb;
+                }
             }
-
-           
-
-
-
-
-
 
 
         }
@@ -155,6 +204,21 @@ namespace Memory
                     num++;
             }
             return num <= 1;
+        }
+
+        private void Button_Click(object sender, RoutedEventArgs e)
+        {
+            Viewbox vb;
+            TextBlock tb;
+            foreach (object item in GridCartas.Children)
+            {
+                Border carta = item as Border;
+                vb = (Viewbox)carta.Child;
+                tb = (TextBlock)vb.Child;
+
+                tb.Text = tb.Tag.ToString();
+            }
+            progreso.Value = progreso.Maximum;
         }
     }
 }
